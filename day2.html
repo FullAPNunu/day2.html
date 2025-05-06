@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Rickroll Bouncing Text</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-size: 24px;
+    }
+
+    /* Rick Astley background GIF */
+    #rickroll-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url("https://media.giphy.com/media/Vuw9m5wXviFIQ/giphy.gif") center center / cover no-repeat;
+      opacity: 0.6;
+      z-index: -2;
+      filter: blur(2px);
+    }
+
+    /* Dark overlay to help text pop */
+    #rickroll-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: -1;
+    }
+
+    h1 {
+      color: white;
+      text-align: center;
+      margin-top: 30px;
+      font-family: 'Segoe UI', sans-serif;
+      text-shadow: 0 0 10px #fff, 0 0 20px #ff00ff;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #fff, 0 0 20px #ff00ff;
+      }
+      to {
+        text-shadow: 0 0 20px #fff, 0 0 30px #ff00ff, 0 0 40px #ff00ff;
+      }
+    }
+
+    #bouncer {
+      position: absolute;
+      padding: 10px 20px;
+      background: #ff69b4;
+      border-radius: 8px;
+      font-family: sans-serif;
+      color: white;
+      transition: background 0.3s;
+      pointer-events: none;
+    }
+
+    .trail {
+      position: absolute;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-family: sans-serif;
+      color: white;
+      opacity: 0.2;
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Background and Overlay -->
+  <div id="rickroll-bg"></div>
+  <div id="rickroll-overlay"></div>
+
+  <!-- Header and Bouncing Text -->
+  <h1>Hello World</h1>
+  <p id="bouncer">This is my first web page! 🚀</p>
+
+  <!-- JavaScript Bouncer -->
+  <script>
+    const text = document.getElementById("bouncer");
+    let x = 100, y = 100;
+    let dx = 2, dy = 2;
+    let angle = 0;
+
+    function getRandomColor() {
+      return `hsl(${Math.random() * 360}, 70%, 60%)`;
+    }
+
+    function getRandomSpeed() {
+      return (Math.random() * 2 + 1) * (Math.random() < 0.5 ? -1 : 1);
+    }
+
+    function createTrail(x, y, color) {
+      const trail = document.createElement("div");
+      trail.className = "trail";
+      trail.style.left = x + "px";
+      trail.style.top = y + "px";
+      trail.style.background = color;
+      trail.innerText = "🚀";
+      document.body.appendChild(trail);
+
+      setTimeout(() => {
+        trail.remove();
+      }, 500);
+    }
+
+    function animate() {
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+      const rect = text.getBoundingClientRect();
+
+      let bounced = false;
+
+      if (x + rect.width >= screenWidth) {
+        x = screenWidth - rect.width;
+        dx = getRandomSpeed() * -1;
+        bounced = true;
+      } else if (x <= 0) {
+        x = 0;
+        dx = getRandomSpeed();
+        bounced = true;
+      }
+
+      if (y + rect.height >= screenHeight) {
+        y = screenHeight - rect.height;
+        dy = getRandomSpeed() * -1;
+        bounced = true;
+      } else if (y <= 0) {
+        y = 0;
+        dy = getRandomSpeed();
+        bounced = true;
+      }
+
+      if (bounced) {
+        const color = getRandomColor();
+        text.style.background = color;
+        createTrail(x, y, color);
+      }
+
+      x += dx;
+      y += dy;
+
+      angle += 2;
+      text.style.left = x + "px";
+      text.style.top = y + "px";
+      text.style.transform = `rotate(${angle}deg)`;
+
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
